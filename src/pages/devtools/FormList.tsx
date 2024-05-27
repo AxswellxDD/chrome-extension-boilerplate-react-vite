@@ -4,7 +4,7 @@ interface FormsListProps {
   formsData: any[];
 }
 
-const FormsList: React.FC<FormsListProps> = ({ formsData }) => (
+const FormList: React.FC<FormsListProps> = ({ formsData }) => (
   <div>
     <h1>Forms Data</h1>
     {formsData.map((formData, index) => (
@@ -16,4 +16,4 @@ const FormsList: React.FC<FormsListProps> = ({ formsData }) => (
   </div>
 );
 
-export default FormsList;
+export default FormList;
