@@ -1,12 +1,13 @@
 import React from 'react';
 import '@pages/panel/Panel.css';
+import Demo from '../devtools/componnents/FormsValuesReader';
 
 const Panel: React.FC = () => {
   return (
-    <div className="container">
-      <h1 className="">Dev Tools Panel</h1>
-    </div>
+    <Demo/>
   );
 };
+
+
 
 export default Panel;
