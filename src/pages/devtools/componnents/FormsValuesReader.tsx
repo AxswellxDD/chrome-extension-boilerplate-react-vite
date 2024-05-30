@@ -1,45 +1,58 @@
-import React, { useState, useEffect } from 'react';
-import useCurrentUrl from './CurrentUrlComponnent';
+import { useState, useEffect } from 'react';
+import CurrentUrl from './CurrentUrlComponnent';
 
-type Post = {
+const BASE_URL = CurrentUrl + '/Form';
+
+type Form = {
   name: string | null;
   type: string;
   id: string | null;
   value: string;
 };
 
-const Demo: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const currentUrl = useCurrentUrl();
-
-  const BASE_URL = currentUrl + '/Post';
+export default function FormsValuesReader(){
+  const [error , setError] = useState();
+  const [isLoading, setIsLoading] = useState(false);
+  const [Forms, setForms] = useState<Form[]>([]);
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      if (currentUrl) {
-        const response = await fetch(`${BASE_URL}/posts`);
-        const posts = (await response.json()) as Post[];
-        setPosts(posts);
-      }
-    };
+    const fetchForms = async () => {
+       setIsLoading(true);
 
-    fetchPosts();
-  }, [currentUrl]);
+      try {
+         const response = await fetch(`${BASE_URL}/Form`);
+         const forms = (await response.json()) as Form[];
 
-  return (
-    <div className='DemoContainer'>
+         setForms(Forms);
+      }catch (e : any){
+         setError(e);
+      }finally{
+         setIsLoading(false);
+       }
+
+      };
+      fetchForms();
+    }, []);
+
+    if (isLoading){
+      return <h1>Loading...</h1>;
+    }
+
+    if (error){
+      return <div>Something went wrong! Try again.</div>;
+    }
+
+
+    return (
+      <div className='DemoContainer'>
       <h1>Fetching forms data from</h1>
-      <p>{currentUrl}</p>
-
       <ul>
-        {posts.map((post) => (
-          <li key={post.id}>
-            {post.type} {post.name} {post.value}
+        {Forms.map((form) => (
+          <li key={form.id}>
+            {form.type} {form.name} {form.value}
           </li>
         ))}
       </ul>
     </div>
   );
 };
-
-export default Demo;
