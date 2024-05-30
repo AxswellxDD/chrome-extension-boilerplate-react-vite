@@ -1,25 +1,45 @@
-import {useState} from 'react'
-import currentUrl from './CurrentUrlComponnent';
+import React, { useState, useEffect } from 'react';
+import useCurrentUrl from './CurrentUrlComponnent';
 
-const BASE_URL = currentUrl + '/forms';
+type Post = {
+  name: string | null;
+  type: string;
+  id: string | null;
+  value: string;
+};
 
-interface Form {
-    id : number;
-    title : string;
-}
+const Demo: React.FC = () => {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const currentUrl = useCurrentUrl();
 
-export default function Demo() {
-    const [forms, setForms] = useState<Form[]>([]);
+  const BASE_URL = currentUrl + '/Post';
 
-    return(
-        <div className='DemoContainer'>
-            <h1>Fething forms data</h1>
-            <ul>
-                {forms.map(form => (
-                    <li key={form.id}>{form.title}</li>
-                ))}
-            </ul>
-        </div>
-    );
+  useEffect(() => {
+    const fetchPosts = async () => {
+      if (currentUrl) {
+        const response = await fetch(`${BASE_URL}/posts`);
+        const posts = (await response.json()) as Post[];
+        setPosts(posts);
+      }
+    };
 
-}
+    fetchPosts();
+  }, [currentUrl]);
+
+  return (
+    <div className='DemoContainer'>
+      <h1>Fetching forms data from</h1>
+      <p>{currentUrl}</p>
+
+      <ul>
+        {posts.map((post) => (
+          <li key={post.id}>
+            {post.type} {post.name} {post.value}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default Demo;

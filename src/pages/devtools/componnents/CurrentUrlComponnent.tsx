@@ -1,19 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-const CurrentUrlComponent: React.FC = () => {
+const useCurrentUrl = () => {
   const [currentUrl, setCurrentUrl] = useState<string>('');
 
   useEffect(() => {
-    // Pobranie aktualnego URL
-    const currentUrl = window.location.href;
-    setCurrentUrl(currentUrl);
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const tabURL = tabs[0].url || 'No URL found';
+      setCurrentUrl(tabURL);
+    });
   }, []);
 
-  return (
-    <div>
-      <p>Current URL: {currentUrl}</p>
-    </div>
-  );
+  return currentUrl;
 };
 
-export default CurrentUrlComponent;
+export default useCurrentUrl;
